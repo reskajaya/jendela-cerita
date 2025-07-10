@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouTube Video Analytics Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- Header -->
+    <header class="mb-8 text-center">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        <i class="fab fa-youtube text-red-600 mr-2"></i> YouTube Video Analytics
+      </h1>
+      <p class="text-gray-600">Analisis statistik video YouTube secara mendalam</p>
+    </header>
+
+    <!-- Main Content -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+      <!-- Input Section -->
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-grow">
+            <label for="videoIdInput" class="block text-sm font-medium text-gray-700 mb-1">Video URL atau ID</label>
+            <div class="relative">
+              <input id="videoIdInput" type="text" 
+                placeholder="https://youtu.be/dQw4w9WgXcQ atau dQw4w9WgXcQ"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <button id="clearBtn" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 hidden">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="md:self-end">
+            <button id="analyzeBtn" class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
+              <i class="fas fa-chart-bar mr-2"></i> Analisis
+            </button>
+          </div>
+        </div>
+        <p class="mt-2 text-sm text-gray-500">Contoh Video ID: dQw4w9WgXcQ</p>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="hidden p-8 text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mx-auto mb-4"></div>
+        <p class="text-gray-600">Mengambil data video...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="errorState" class="hidden p-6 bg-red-50 rounded-lg mx-4 my-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <i class="fas fa-exclamation-circle text-red-500 text-xl"></i>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800" id="errorMessage"></h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div id="videoStats" class="hidden p-6">
+        <!-- Video Info -->
+        <div class="flex flex-col md:flex-row gap-6 mb-8">
+          <div class="md:w-1/3">
+            <div class="bg-gray-100 rounded-lg overflow-hidden aspect-video">
+              <img id="videoThumbnail" src="" alt="Video thumbnail" class="w-full h-full object-cover">
+            </div>
+          </div>
+          <div class="md:w-2/3">
+            <h2 id="videoTitle" class="text-xl font-bold text-gray-800 mb-2"></h2>
+            <a id="videoLink" href="#" target="_blank" class="text-blue-600 hover:underline mb-4 inline-block">
+              <i class="fas fa-external-link-alt mr-1"></i> Tonton di YouTube
+            </a>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <p class="text-sm text-gray-500">Tanggal Upload</p>
+                <p id="uploadDate" class="font-medium"></p>
+              </div>
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <p class="text-sm text-gray-500">Durasi</p>
+                <p id="videoDuration" class="font-medium"></p>
+              </div>
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <p class="text-sm text-gray-500">Channel</p>
+                <p id="channelName" class="font-medium"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+            <div class="flex items-center">
+              <div class="p-2 rounded-full bg-blue-100 text-blue-600 mr-3">
+                <i class="fas fa-eye"></i>
+              </div>
+              <div>
+                <p class="text-sm text-blue-800">Total Views</p>
+                <p id="viewCount" class="text-xl font-bold text-blue-900"></p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+            <div class="flex items-center">
+              <div class="p-2 rounded-full bg-green-100 text-green-600 mr-3">
+                <i class="fas fa-thumbs-up"></i>
+              </div>
+              <div>
+                <p class="text-sm text-green-800">Total Likes</p>
+                <p id="likeCount" class="text-xl font-bold text-green-900"></p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+            <div class="flex items-center">
+              <div class="p-2 rounded-full bg-purple-100 text-purple-600 mr-3">
+                <i class="fas fa-comment"></i>
+              </div>
+              <div>
+                <p class="text-sm text-purple-800">Total Komentar</p>
+                <p id="commentCount" class="text-xl font-bold text-purple-900"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Advanced Stats -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h3 class="font-medium text-gray-800 mb-3 flex items-center">
+            <i class="fas fa-chart-line mr-2 text-gray-600"></i> Statistik Lanjutan
+          </h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="p-3 bg-white rounded-lg shadow-xs">
+              <p class="text-sm text-gray-500">Like Ratio</p>
+              <p id="likeRatio" class="font-medium"></p>
+            </div>
+            <div class="p-3 bg-white rounded-lg shadow-xs">
+              <p class="text-sm text-gray-500">Views/Komentar</p>
+              <p id="viewsPerComment" class="font-medium"></p>
+            </div>
+            <div class="p-3 bg-white rounded-lg shadow-xs">
+              <p class="text-sm text-gray-500">Usia Video</p>
+              <p id="videoAge" class="font-medium"></p>
+            </div>
+            <div class="p-3 bg-white rounded-lg shadow-xs">
+              <p class="text-sm text-gray-500">Views/Hari</p>
+              <p id="viewsPerDay" class="font-medium"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-sm text-gray-500">
+      <p>© 2023 YouTube Analytics Dashboard | Gunakan API Key Anda sendiri</p>
+    </footer>
+  </div>
+
+  <script>
+    const API_KEY = 'AIzaSyDog2kn4dh0nrFYa3_aHwSDAITIsHHhciM'; // Ganti dengan API key kamu
+    
+    // DOM Elements
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const videoIdInput = document.getElementById('videoIdInput');
+    const clearBtn = document.getElementById('clearBtn');
+    const videoStats = document.getElementById('videoStats');
+    const loadingState = document.getElementById('loadingState');
+    const errorState = document.getElementById('errorState');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // Extract video ID from URL
+    function extractVideoId(url) {
+      // Regular URL formats
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      const match = url.match(regExp);
+      
+      if (match && match[2].length === 11) {
+        return match[2];
+      }
+      
+      // If it's just the ID (11 characters)
+      if (url.length === 11 && !url.includes('/') && !url.includes('=')) {
+        return url;
+      }
+      
+      return null;
+    }
+
+    // Format numbers
+    function formatNumber(num) {
+      if (!num) return 'N/A';
+      return parseInt(num).toLocaleString('id-ID');
+    }
+
+    // Calculate video age
+    function getVideoAge(publishedAt) {
+      const uploadDate = new Date(publishedAt);
+      const today = new Date();
+      const diffTime = Math.abs(today - uploadDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+      
+      if (diffDays < 30) {
+        return `${diffDays} hari`;
+      } else if (diffDays < 365) {
+        const months = Math.floor(diffDays / 30);
+        return `${months} bulan`;
+      } else {
+        const years = Math.floor(diffDays / 365);
+        const remainingMonths = Math.floor((diffDays % 365) / 30);
+        return `${years} tahun ${remainingMonths} bulan`;
+      }
+    }
+
+    // Format duration (ISO 8601 to readable format)
+    function formatDuration(duration) {
+      const matches = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+      const hours = (matches[1] || '0H').replace('H', '');
+      const minutes = (matches[2] || '0M').replace('M', '');
+      const seconds = (matches[3] || '0S').replace('S', '');
+      
+      let result = '';
+      if (hours > 0) result += `${hours} jam `;
+      if (minutes > 0) result += `${minutes} menit `;
+      if (seconds > 0) result += `${seconds} detik`;
+      
+      return result || 'N/A';
+    }
+
+    // Clear input
+    clearBtn.addEventListener('click', () => {
+      videoIdInput.value = '';
+      clearBtn.classList.add('hidden');
+      videoStats.classList.add('hidden');
+      errorState.classList.add('hidden');
+    });
+
+    // Show/hide clear button based on input
+    videoIdInput.addEventListener('input', () => {
+      if (videoIdInput.value.trim()) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+    });
+
+    // Analyze button click handler
+    analyzeBtn.addEventListener('click', async () => {
+      const input = videoIdInput.value.trim();
+      if (!input) {
+        showError('Masukkan URL atau ID video YouTube');
+        return;
+      }
+
+      const videoId = extractVideoId(input);
+      if (!videoId) {
+        showError('Format URL atau ID video tidak valid');
+        return;
+      }
+
+      // Show loading state
+      loadingState.classList.remove('hidden');
+      videoStats.classList.add('hidden');
+      errorState.classList.add('hidden');
+
+      try {
+        // Fetch video data
+        const [videoRes, channelRes] = await Promise.all([
+          fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${videoId}&key=${API_KEY}`),
+          fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${API_KEY}`)
+        ]);
+
+        if (!videoRes.ok) throw new Error(await videoRes.text());
+        if (!channelRes.ok) throw new Error(await channelRes.text());
+
+        const videoData = await videoRes.json();
+        const channelData = await channelRes.json();
+
+        if (!videoData.items?.length) {
+          showError('Video tidak ditemukan');
+          return;
+        }
+
+        const video = videoData.items[0];
+        const channel = channelData.items[0];
+        
+        // Extract data
+        const { title, publishedAt, channelId, channelTitle, thumbnails } = video.snippet;
+        const { viewCount, likeCount, commentCount } = video.statistics;
+        const { duration } = video.contentDetails;
+        
+        // Calculate advanced metrics
+        const likeRatio = likeCount ? ((likeCount / viewCount) * 100).toFixed(2) + '%' : 'N/A';
+        const viewsPerComment = commentCount ? Math.round(viewCount / commentCount) : 'N/A';
+        const age = getVideoAge(publishedAt);
+        const viewsPerDay = Math.round(viewCount / (Math.abs(new Date() - new Date(publishedAt)) / (1000 * 60 * 60 * 24)));
+        
+        // Update UI
+        document.getElementById('videoTitle').textContent = title;
+        document.getElementById('videoLink').href = `https://youtube.com/watch?v=${videoId}`;
+        document.getElementById('videoThumbnail').src = thumbnails.medium?.url || thumbnails.default.url;
+        document.getElementById('uploadDate').textContent = new Date(publishedAt).toLocaleDateString('id-ID');
+        document.getElementById('videoDuration').textContent = formatDuration(duration);
+        document.getElementById('channelName').textContent = channelTitle;
+        
+        document.getElementById('viewCount').textContent = formatNumber(viewCount);
+        document.getElementById('likeCount').textContent = likeCount ? formatNumber(likeCount) : 'Privasi';
+        document.getElementById('commentCount').textContent = commentCount ? formatNumber(commentCount) : 'Privasi';
+        
+        document.getElementById('likeRatio').textContent = likeRatio;
+        document.getElementById('viewsPerComment').textContent = formatNumber(viewsPerComment);
+        document.getElementById('videoAge').textContent = age;
+        document.getElementById('viewsPerDay').textContent = formatNumber(viewsPerDay);
+
+        // Show results
+        loadingState.classList.add('hidden');
+        videoStats.classList.remove('hidden');
+      } catch (error) {
+        console.error('Error:', error);
+        showError('Terjadi kesalahan saat mengambil data. Cek API key atau koneksi internet Anda.');
+      }
+    });
+
+    function showError(message) {
+      loadingState.classList.add('hidden');
+      errorMessage.textContent = message;
+      errorState.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
