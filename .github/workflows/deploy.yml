@@ -1,37 +1,33 @@
 name: Deploy YouTube Channel Website
-on: 
+
+on:
   push:
     branches: [ "master" ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
     
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
         
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           
-      - name: Create config directory
-        run: mkdir -p js
-        
-      - name: Inject API Key
+      - name: Create Config
         run: |
-          echo "const API_KEY = '${{ secrets.YT_API_KEY }}';" > js/config.js
-          echo "const CHANNEL_ID = 'UCcpMp0LFsZ3mX2TSVgfk1ow';" >> js/config.js
-          echo "export { API_KEY, CHANNEL_ID };" >> js/config.js
+          mkdir -p js
+          echo "export const API_KEY = '${{ secrets.YT_API_KEY }}';" > js/config.js
+          echo "export const CHANNEL_ID = 'UCcpMp0LFsZ3mX2TSVgfk1ow';" >> js/config.js
           
-      - name: Install dependencies (if needed)
-        run: npm install
-        
-      - name: Build project (if needed)
-        run: npm run build
-        
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
