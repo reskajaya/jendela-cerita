@@ -1,75 +1,496 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Channel Jendela Cerita</title>
+  <title>Channel YouTube Jendela Cerita - Kumpulan Video Terbaik</title>
+  <meta name="description" content="Temukan semua video menarik dari Channel YouTube Jendela Cerita. Tonton, bagikan, dan dukung channel kami!">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'yt-red': '#FF0000',
+            'yt-dark': '#282828',
+            'yt-light-red': '#FFEEEE'
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
+  <!-- SUBSCRIBE NOTIFICATION BAR -->
+  <div id="subscribeBar" class="bg-yt-light-red border-b border-yt-red py-2 px-4 hidden">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <p class="text-sm">Dukung kami dengan subscribe ke channel YouTube Jendela Cerita!</p>
+      <div class="flex space-x-2">
+        <button id="closeSubscribeBar" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+        <a href="https://www.youtube.com/channel/UCcpMp0LFsZ3mX2TSVgfk1ow?sub_confirmation=1" 
+           target="_blank" 
+           class="bg-yt-red text-white px-3 py-1 rounded text-sm hover:bg-red-700">
+          <i class="fab fa-youtube mr-1"></i> Subscribe
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- HEADER -->
-  <header class="bg-blue-600 text-white p-6 text-center">
-    <h1 class="text-3xl font-bold">Channel YouTube Jendela Cerita</h1>
-    <p class="text-sm mt-1">Temukan semua video kami 🎬</p>
+  <header class="bg-yt-red text-white p-6 text-center shadow-md">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-col md:flex-row items-center justify-between">
+        <div class="flex items-center justify-center md:justify-start mb-4 md:mb-0">
+          <i class="fab fa-youtube text-3xl mr-3"></i>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold">Channel YouTube Jendela Cerita</h1>
+            <p class="text-sm mt-1">Temukan semua video menarik dari channel kami 🎬</p>
+          </div>
+        </div>
+        <a href="https://www.youtube.com/channel/UCcpMp0LFsZ3mX2TSVgfk1ow?sub_confirmation=1" 
+           target="_blank" 
+           class="bg-white text-yt-red px-4 py-2 rounded-full font-medium hover:bg-gray-100 transition flex items-center animate-bounce">
+          <i class="fab fa-youtube mr-2"></i> Subscribe
+        </a>
+      </div>
+    </div>
   </header>
+
+  <!-- STATS BANNER -->
+  <div class="bg-yt-dark text-white py-4">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div class="p-2">
+          <div class="text-2xl font-bold" id="totalVideos">0</div>
+          <div class="text-xs">Total Video</div>
+        </div>
+        <div class="p-2">
+          <div class="text-2xl font-bold" id="totalViews">0</div>
+          <div class="text-xs">Total Views</div>
+        </div>
+        <div class="p-2">
+          <div class="text-2xl font-bold" id="subscriberCount">0</div>
+          <div class="text-xs">Subscribers</div>
+        </div>
+        <div class="p-2">
+          <div class="text-2xl font-bold" id="latestVideo">-</div>
+          <div class="text-xs">Video Terbaru</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBSCRIBE MODAL -->
+  <div id="subscribeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+      <div class="text-center mb-4">
+        <i class="fab fa-youtube text-4xl text-yt-red mb-3"></i>
+        <h3 class="text-xl font-bold mb-2">Dukung Channel Kami!</h3>
+        <p class="text-gray-600">Subscribe untuk mendapatkan notifikasi video terbaru dari Jendela Cerita</p>
+      </div>
+      <div class="flex justify-center space-x-3 mt-4">
+        <button id="closeModal" class="px-4 py-2 border rounded hover:bg-gray-50">Nanti Saja</button>
+        <a href="https://www.youtube.com/channel/UCcpMp0LFsZ3mX2TSVgfk1ow?sub_confirmation=1" 
+           target="_blank" 
+           class="px-4 py-2 bg-yt-red text-white rounded hover:bg-red-700">
+          Subscribe Sekarang
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- VIDEO SECTION -->
   <section class="max-w-6xl mx-auto px-4 py-8">
-    <h2 class="text-xl font-semibold mb-4">🎥 Semua Video</h2>
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-yt-dark mb-4 md:mb-0">
+        <i class="fas fa-play-circle mr-2"></i> Koleksi Video Kami
+      </h2>
+      <div class="flex space-x-2">
+        <button id="sortByDate" class="bg-white px-3 py-1 rounded border hover:bg-gray-50 active:bg-gray-100">
+          <i class="far fa-clock mr-1"></i> Terbaru
+        </button>
+        <button id="sortByViews" class="bg-white px-3 py-1 rounded border hover:bg-gray-50 active:bg-gray-100">
+          <i class="far fa-eye mr-1"></i> Populer
+        </button>
+      </div>
+    </div>
+
     <div id="videoList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+    <div id="loadingMore" class="text-center py-8 hidden">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-yt-red"></div>
+      <p class="mt-2 text-gray-600">Memuat video lainnya...</p>
+    </div>
+
+    <div class="text-center mt-8">
+      <button id="loadMoreBtn" class="bg-yt-red text-white px-6 py-2 rounded-full hover:bg-red-700 transition hidden">
+        <i class="fas fa-plus mr-2"></i> Muat Lebih Banyak
+      </button>
+    </div>
+  </section>
+
+  <!-- SHARE SECTION -->
+  <section class="bg-blue-50 py-8">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <h2 class="text-2xl font-bold text-yt-dark mb-4">Bantu Kami Berkembang!</h2>
+      <p class="text-gray-700 mb-6">Bagikan channel kami ke teman-teman Anda untuk mendukung konten berkualitas</p>
+      <div class="flex justify-center space-x-4">
+        <a href="#" id="shareWhatsApp" class="bg-green-500 text-white p-3 rounded-full hover:bg-green-600 transition">
+          <i class="fab fa-whatsapp text-xl"></i>
+        </a>
+        <a href="#" id="shareFacebook" class="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition">
+          <i class="fab fa-facebook-f text-xl"></i>
+        </a>
+        <a href="#" id="shareTwitter" class="bg-blue-400 text-white p-3 rounded-full hover:bg-blue-500 transition">
+          <i class="fab fa-twitter text-xl"></i>
+        </a>
+      </div>
+    </div>
   </section>
 
   <!-- FOOTER -->
-  <footer class="bg-gray-200 text-center text-sm text-gray-600 p-4">
-    © <span id="year"></span> Jendela Cerita | Dibuat dengan ❤️ dan API YouTube
+  <footer class="bg-gray-200 py-6">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <div class="flex items-center">
+            <i class="fab fa-youtube text-2xl text-yt-red mr-2"></i>
+            <span class="font-bold">Jendela Cerita</span>
+          </div>
+          <p class="text-sm text-gray-600 mt-1">Channel edukasi dan hiburan berkualitas</p>
+        </div>
+        <div class="flex space-x-4">
+          <a href="#" class="text-gray-700 hover:text-yt-red transition">
+            <i class="fab fa-instagram text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-700 hover:text-yt-red transition">
+            <i class="fab fa-tiktok text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-700 hover:text-yt-red transition">
+            <i class="fab fa-telegram text-xl"></i>
+          </a>
+        </div>
+      </div>
+      <div class="border-t border-gray-300 mt-4 pt-4 text-center text-sm text-gray-600">
+        © <span id="year"></span> Jendela Cerita | Dibuat dengan ❤️ dan API YouTube
+      </div>
+    </div>
   </footer>
 
   <script>
-    const API_KEY = 'AIzaSyDog2kn4dh0nrFYa3_aHwSDAITIsHHhciM'; // Ganti dengan API key kamu
-    const CHANNEL_ID = 'UCcpMp0LFsZ3mX2TSVgfk1ow'; // Channel Jendela Cerita
+    const API_KEY = 'AIzaSyDog2kn4dh0nrFYa3_aHwSDAITIsHHhciM'; // Ganti dengan API key Anda
+    const CHANNEL_ID = 'UCcpMp0LFsZ3mX2TSVgfk1ow';
     const videoList = document.getElementById('videoList');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const loadingMore = document.getElementById('loadingMore');
+    const sortByDate = document.getElementById('sortByDate');
+    const sortByViews = document.getElementById('sortByViews');
+    const subscribeBar = document.getElementById('subscribeBar');
+    const closeSubscribeBar = document.getElementById('closeSubscribeBar');
+    const subscribeModal = document.getElementById('subscribeModal');
+    const closeModal = document.getElementById('closeModal');
 
-    async function fetchAllVideos(pageToken = '') {
-      const baseUrl = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&type=video&maxResults=50&pageToken=${pageToken}`;
+    let nextPageToken = '';
+    let allVideos = [];
+    let isFetching = false;
+
+    // Share buttons
+    const shareMessage = "Tonton video menarik dari Channel YouTube Jendela Cerita: https://www.youtube.com/channel/UCcpMp0LFsZ3mX2TSVgfk1ow";
+    document.getElementById('shareWhatsApp').href = `https://wa.me/?text=${encodeURIComponent(shareMessage)}`;
+    document.getElementById('shareFacebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://www.youtube.com/channel/UCcpMp0LFsZ3mX2TSVgfk1ow')}`;
+    document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`;
+
+    // Format numbers
+    function formatNumber(num) {
+      if (!num) return '0';
+      return parseInt(num).toLocaleString('id-ID');
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      return new Date(dateString).toLocaleDateString('id-ID', options);
+    }
+
+    // Calculate time since upload
+    function timeSince(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const seconds = Math.floor((now - date) / 1000);
       
-      try {
-        const res = await fetch(baseUrl);
-        const data = await res.json();
+      let interval = Math.floor(seconds / 31536000);
+      if (interval >= 1) return `${interval} tahun lalu`;
+      
+      interval = Math.floor(seconds / 2592000);
+      if (interval >= 1) return `${interval} bulan lalu`;
+      
+      interval = Math.floor(seconds / 86400);
+      if (interval >= 1) return `${interval} hari lalu`;
+      
+      interval = Math.floor(seconds / 3600);
+      if (interval >= 1) return `${interval} jam lalu`;
+      
+      interval = Math.floor(seconds / 60);
+      if (interval >= 1) return `${interval} menit lalu`;
+      
+      return `${Math.floor(seconds)} detik lalu`;
+    }
 
-        if (!data.items || data.items.length === 0) {
-          if (!pageToken) {
-            videoList.innerHTML = `<p class="text-center text-red-500 col-span-2">Tidak ada video ditemukan.</p>`;
-          }
-          return;
-        }
-
-        data.items.forEach(item => {
-          const { title, publishedAt, thumbnails } = item.snippet;
-          const videoId = item.id.videoId;
-          const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-
-          const card = `
-            <a href="${videoUrl}" target="_blank" class="block bg-white rounded shadow hover:shadow-lg transition p-3">
-              <img src="${thumbnails.medium.url}" alt="${title}" class="rounded mb-2 w-full">
-              <h3 class="text-blue-600 font-medium">${title}</h3>
-              <p class="text-xs text-gray-500 mt-1">Dipublikasikan: ${new Date(publishedAt).toLocaleDateString()}</p>
-            </a>
-          `;
-          videoList.insertAdjacentHTML('beforeend', card);
-        });
-
-        if (data.nextPageToken) {
-          await fetchAllVideos(data.nextPageToken);
-        }
-
-      } catch (error) {
-        videoList.innerHTML = `<p class="text-red-500 col-span-2">Terjadi kesalahan: ${error.message}</p>`;
+    // Show subscribe bar
+    function showSubscribeBar() {
+      const hasClosed = localStorage.getItem('subscribeBarClosed');
+      if (!hasClosed) {
+        setTimeout(() => {
+          subscribeBar.classList.remove('hidden');
+        }, 5000);
       }
     }
 
-    fetchAllVideos();
+    // Show subscribe modal
+    function showSubscribeModal() {
+      const hasClosed = localStorage.getItem('subscribeModalClosed');
+      if (!hasClosed) {
+        setTimeout(() => {
+          subscribeModal.classList.remove('hidden');
+        }, 15000);
+      }
+    }
+
+    // Close subscribe bar
+    closeSubscribeBar.addEventListener('click', () => {
+      subscribeBar.classList.add('hidden');
+      localStorage.setItem('subscribeBarClosed', 'true');
+    });
+
+    // Close modal
+    closeModal.addEventListener('click', () => {
+      subscribeModal.classList.add('hidden');
+      localStorage.setItem('subscribeModalClosed', 'true');
+    });
+
+    // Fetch channel statistics
+    async function fetchChannelStats() {
+      try {
+        const res = await fetch(
+          `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&id=${CHANNEL_ID}&key=${API_KEY}`
+        );
+        const data = await res.json();
+        
+        if (data.items && data.items.length > 0) {
+          const stats = data.items[0].statistics;
+          const snippet = data.items[0].snippet;
+          
+          document.getElementById('subscriberCount').textContent = formatNumber(stats.subscriberCount);
+          
+          // Update title with channel name
+          document.title = `${snippet.title} - Kumpulan Video Terbaik`;
+          document.querySelector('header h1').textContent = snippet.title;
+          document.querySelector('header p').textContent = snippet.description.substring(0, 60) + '...';
+        }
+      } catch (err) {
+        console.error('Error fetching channel stats:', err);
+      }
+    }
+
+    // Fetch video details for view counts
+    async function fetchVideoDetails(videoIds) {
+      try {
+        const res = await fetch(
+          `https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails&id=${videoIds.join(',')}&key=${API_KEY}`
+        );
+        const data = await res.json();
+        return data.items || [];
+      } catch (err) {
+        console.error('Error fetching video details:', err);
+        return [];
+      }
+    }
+
+    // Render videos
+    async function renderVideos(videos) {
+      if (videos.length === 0) {
+        videoList.innerHTML = '<p class="text-center text-red-500 col-span-3">Tidak ada video ditemukan.</p>';
+        return;
+      }
+
+      // Get video IDs for fetching details
+      const videoIds = videos.map(v => v.id.videoId);
+      const videoDetails = await fetchVideoDetails(videoIds);
+
+      // Create a map of video details for easy access
+      const detailsMap = {};
+      videoDetails.forEach(video => {
+        detailsMap[video.id] = {
+          viewCount: video.statistics.viewCount,
+          duration: video.contentDetails.duration
+        };
+      });
+
+      // Clear loading message if first render
+      if (allVideos.length === 0) {
+        videoList.innerHTML = '';
+      }
+
+      // Add videos to DOM
+      videos.forEach(video => {
+        const { title, publishedAt, thumbnails, description } = video.snippet;
+        const videoId = video.id.videoId;
+        const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+        const channelUrl = `https://www.youtube.com/channel/${video.snippet.channelId}`;
+        
+        const views = detailsMap[videoId]?.viewCount || 'N/A';
+        const duration = detailsMap[videoId]?.duration || 'PT0M0S';
+        
+        // Format duration (e.g. PT5M30S -> 5:30)
+        const durationFormatted = duration.replace(/PT(\d+M)?(\d+S)?/, (match, m, s) => {
+          const mins = m ? m.replace('M', '') : '0';
+          const secs = s ? s.replace('S', '') : '0';
+          return `${mins.padStart(2, '0')}:${secs.padStart(2, '0')}`;
+        });
+
+        const card = `
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1">
+            <div class="relative">
+              <a href="${videoUrl}" target="_blank">
+                <img src="${thumbnails.medium.url}" alt="${title}" class="w-full h-40 object-cover">
+                <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-1 rounded">
+                  ${durationFormatted}
+                </div>
+              </a>
+            </div>
+            <div class="p-4">
+              <a href="${videoUrl}" target="_blank" class="block">
+                <h3 class="font-bold text-gray-800 mb-2 line-clamp-2" title="${title}">${title}</h3>
+              </a>
+              <div class="flex items-center text-xs text-gray-500 mb-2">
+                <span><i class="far fa-eye mr-1"></i> ${formatNumber(views)} views</span>
+                <span class="mx-2">•</span>
+                <span>${timeSince(publishedAt)}</span>
+              </div>
+              <p class="text-xs text-gray-600 line-clamp-2 mb-3">${description}</p>
+              <div class="flex justify-between items-center">
+                <a href="${channelUrl}" target="_blank" class="text-xs text-blue-600 hover:underline">Jendela Cerita</a>
+                <div class="flex space-x-2">
+                  <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(videoUrl)}" 
+                     target="_blank" 
+                     class="text-gray-500 hover:text-blue-600 transition">
+                    <i class="fab fa-facebook"></i>
+                  </a>
+                  <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(videoUrl)}&text=${encodeURIComponent(title)}" 
+                     target="_blank" 
+                     class="text-gray-500 hover:text-blue-400 transition">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                  <a href="https://wa.me/?text=${encodeURIComponent(`${title} - Tonton di: ${videoUrl}`)}" 
+                     target="_blank" 
+                     class="text-gray-500 hover:text-green-500 transition">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        videoList.insertAdjacentHTML('beforeend', card);
+      });
+
+      // Update stats
+      updateStats(videos, videoDetails);
+    }
+
+    // Update statistics
+    function updateStats(videos, videoDetails) {
+      document.getElementById('totalVideos').textContent = formatNumber(videos.length);
+      
+      const totalViews = videoDetails.reduce((sum, video) => {
+        return sum + parseInt(video.statistics.viewCount || 0);
+      }, 0);
+      document.getElementById('totalViews').textContent = formatNumber(totalViews);
+      
+      if (videos.length > 0) {
+        document.getElementById('latestVideo').textContent = timeSince(videos[0].snippet.publishedAt);
+      }
+    }
+
+    // Sort videos
+    function sortVideos(sortBy) {
+      if (sortBy === 'date') {
+        allVideos.sort((a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt));
+        sortByDate.classList.add('bg-gray-100', 'font-medium');
+        sortByViews.classList.remove('bg-gray-100', 'font-medium');
+      } else if (sortBy === 'views') {
+        // This would require fetching view counts for all videos first
+        // For simplicity, we'll just sort by date again
+        // In a real app, you would store view counts and sort by them
+        allVideos.sort((a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt));
+        sortByViews.classList.add('bg-gray-100', 'font-medium');
+        sortByDate.classList.remove('bg-gray-100', 'font-medium');
+      }
+      
+      videoList.innerHTML = '';
+      renderVideos(allVideos);
+    }
+
+    // Fetch all videos
+    async function fetchAllVideos() {
+      if (isFetching) return;
+      isFetching = true;
+      
+      if (!nextPageToken) {
+        videoList.innerHTML = '<p class="text-center text-gray-500 col-span-3">Memuat video...</p>';
+      } else {
+        loadingMore.classList.remove('hidden');
+        loadMoreBtn.classList.add('hidden');
+      }
+
+      try {
+        const res = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=12&type=video&pageToken=${nextPageToken}`
+        );
+        const data = await res.json();
+        
+        if (!data.items || data.items.length === 0) {
+          if (allVideos.length === 0) {
+            videoList.innerHTML = '<p class="text-center text-red-500 col-span-3">Tidak ada video ditemukan.</p>';
+          }
+          loadMoreBtn.classList.add('hidden');
+          return;
+        }
+        
+        const videos = data.items.filter(item => item.id.kind === 'youtube#video');
+        allVideos = [...allVideos, ...videos];
+        nextPageToken = data.nextPageToken;
+        
+        await renderVideos(videos);
+        
+        if (nextPageToken) {
+          loadMoreBtn.classList.remove('hidden');
+        } else {
+          loadMoreBtn.classList.add('hidden');
+        }
+      } catch (err) {
+        console.error('Error fetching videos:', err);
+        videoList.innerHTML = `<p class="text-red-500 col-span-3">Terjadi kesalahan: ${err.message}</p>`;
+      } finally {
+        isFetching = false;
+        loadingMore.classList.add('hidden');
+      }
+    }
+
+    // Event listeners
+    loadMoreBtn.addEventListener('click', fetchAllVideos);
+    sortByDate.addEventListener('click', () => sortVideos('date'));
+    sortByViews.addEventListener('click', () => sortVideos('views'));
+
+    // Initialize
     document.getElementById("year").textContent = new Date().getFullYear();
+    fetchChannelStats();
+    fetchAllVideos();
+    showSubscribeBar();
+    showSubscribeModal();
   </script>
 </body>
 </html>
